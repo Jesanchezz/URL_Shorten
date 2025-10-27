@@ -11,7 +11,7 @@ router_url_shorter = APIRouter(prefix="/api-url", tags=["URL Shorter"],
 
 
 @router_url_shorter.post("/shorten")
-def create_url_short(url_input: URLSchema, db: Session = Depends(get_db)):
+async def create_url_short(url_input: URLSchema, db: Session = Depends(get_db)):
     url_created = generate_short_url(url_input, db)
     if not url_created:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -20,7 +20,7 @@ def create_url_short(url_input: URLSchema, db: Session = Depends(get_db)):
 
 
 @router_url_shorter.get("/redirect/{url_key}")
-def redirect_url(url_key: str, db: Session = Depends(get_db)):
+async def redirect_url(url_key: str, db: Session = Depends(get_db)):
     url = url_finded(url_key, db)
     if not url:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="URL not found")
